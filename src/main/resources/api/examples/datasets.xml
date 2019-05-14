@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<record id="1">
+		<first_name>Marmaduke</first_name>
+		<last_name>Yerrill</last_name>
+		<gender>Male</gender>
+		<ip_address>33.12.142.233</ip_address>
+		<email>
+			<main>myerrill0@cpanel.net</main>
+			<other>myerrill0@nbcnews.com</other>
+		</email>
+	</record>
+	<record id="2">
+		<first_name>Noelani</first_name>
+		<last_name>Tchaikovsky</last_name>
+		<gender>Female</gender>
+		<ip_address>248.73.9.210</ip_address>
+		<email>
+			<main>ntchaikovsky1@flickr.com</main>
+			<other>ntchaikovsky1@icio.us</other>
+		</email>
+	</record>
+	<record id="3">
+		<first_name>Leodora</first_name>
+		<last_name>Haburne</last_name>
+		<gender>Female</gender>
+		<ip_address>6.159.66.93</ip_address>
+		<email>
+			<main>lhaburne2@google.co.jp</main>
+			<other>lhaburne2@skype.com</other>
+		</email>
+	</record>
+</dataset>

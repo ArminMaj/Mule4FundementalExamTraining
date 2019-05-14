@@ -1,0 +1,53 @@
+#%RAML 1.0
+title: examplePrep
+
+
+types:
+  val: !include types/val.raml
+  record: !include types/DataType.raml
+
+/main_uri:
+  /subFlowVarPayloadTest:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: val[]
+              example: !include examples/valArrayExample.json
+  /error:
+    /OnContinueFlowRef:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: val
+                example: !include examples/valExample.json
+    /OnContinueSubFlowRef:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: val
+                example: !include examples/valExample.json
+
+    /OnProgagateFlowRef:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: val
+                example: !include examples/valExample.json
+
+  /scattergather:
+    /test1:
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: val[]
+                example: !include examples/valArrayExample.json

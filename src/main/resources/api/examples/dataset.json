@@ -1,0 +1,15 @@
+  {
+    "record":
+    {
+      "id": 1,
+      "first_name": "Morgan",
+      "gender": "Female",
+      "ip_address": "43.1.39.246",
+      "last_name": "Giacomelli",
+      "email": 
+      {
+        "main": "mgiacomelli0@mlb.com",
+        "other": "mgiacomelli0@surveymonkey.com"
+      }
+    }
+  }

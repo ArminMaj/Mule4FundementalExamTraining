@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="FlowRefTestFlow" doc:id="c79e8532-5f53-4339-a315-eef5cfcbe0dd" >
+		<set-payload value="10" doc:name="10" doc:id="7e07d820-731f-44b2-bde4-3c5e36ada2ba" mimeType="text/plain" encoding="10"/>
+		<ee:transform doc:name='{"val": 10}' doc:id="da8c5042-a43b-4bd6-bb4f-1eefce5f4e24" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	"val": (payload as Number default 0) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="fb091328-25a0-42e0-ae07-4485e5b5a556" name="payloadTo30" targetValue="#[payload]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="995d0eb2-3a0a-450a-b932-dc2acbdeeebb" >
+				<set-payload value="55" doc:name="55" doc:id="dee0a8b8-882f-47c5-83d8-65b8e1668436" />
+				<ee:transform doc:name='{"val": 55}' doc:id="3552e8f6-3f3e-44fe-9c1c-d0f93feeae9b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default -50)
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="payloadTo30" doc:id="a8dcce62-6915-4c6c-953b-23c88a8f2852" >
+		<set-payload value="100" doc:name="100" doc:id="760e6920-817c-4145-a33e-d0d7c23e364b" />
+		<ee:transform doc:name='{"val": 100}' doc:id="73c3d2bf-cd0d-40ea-abe7-5e18d4286c5d">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default -50
+	)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:is-null doc:name="Is null" doc:id="4346badd-58c1-404c-9f8b-a56fc4998f44" value="#[payload]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dcde62a2-f9b1-43d9-a663-8762c11462c8" >
+				<set-payload value="20" doc:name="20" doc:id="3a7021d5-2d0e-4391-ab7f-86f61b83c599" />
+				<ee:transform doc:name='{"val": 20}' doc:id="e43208cd-1b2b-4150-a2c8-ed7d068e0fa1">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload.val as Number default -50)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

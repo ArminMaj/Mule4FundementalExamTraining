@@ -1,0 +1,45 @@
+[
+  {
+    "record":
+    {
+      "id": 1,
+      "first_name": "Morgan",
+      "gender": "Female",
+      "ip_address": "43.1.39.246",
+      "last_name": "Giacomelli",
+      "email": 
+      {
+        "main": "mgiacomelli0@mlb.com",
+        "other": "mgiacomelli0@surveymonkey.com"
+      }
+    }
+  },
+  {
+  "record":
+    {
+        "id": 2,
+        "first_name": "Shanon",
+        "gender": "Female",
+        "ip_address": "48.95.58.45",
+        "last_name": "Chancellor",
+        "email": {
+          "main": "schancellor1@blog.com",
+          "other": "schancellor1@blog.com"
+        }
+      }
+    }, 
+  {
+  "record":
+    {
+      "id": 3,    
+      "first_name": "Udale",
+      "gender": "Male",
+      "ip_address": "143.57.0.137",
+      "last_name": "Seabert",
+      "email": {
+        "main": "useabert2@cpanel.net",
+        "other": "useabert2@smugmug.com"
+      }
+    }
+  }
+]

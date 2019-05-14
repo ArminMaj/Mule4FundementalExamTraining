@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="b195ae88-6070-42af-abed-8f9f3efb5b95">
+		<http:request-connection port="8081"/>
+	</http:request-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="08e82ecd-17a9-4990-9501-ad34f64ca489">
+		<vm:queues >
+			<vm:queue queueName="vm:collect1" maxOutstandingMessages="100"/>
+			<vm:queue queueName="vm:collect2" maxOutstandingMessages="100" />
+		</vm:queues>
+	</vm:config>
+	<flow name="scatterGatherTest1" doc:id="3ba318b5-2ef6-4526-ac09-f0af12c76112" >
+		<set-payload value="10" doc:name="10" doc:id="e7ab370e-b3cc-4ba0-b80f-4db34559dd97" />
+		<ee:transform doc:name='{"val":10}' doc:id="bad01d96-ad5c-480a-b572-ad7a15d56d30">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="7b6b9cc7-e080-4586-8c48-c8e831e350e7" >
+			<route >
+				<vm:consume doc:name="Collect1" doc:id="d9f2767f-cfe7-4fe4-ae41-a7abab9819b8" config-ref="VM_Config" queueName="vm:collect1"/>
+			</route>
+			<route >
+				<vm:consume doc:name="Collect2" doc:id="af0f419d-363e-41ef-b4b8-b7b3fae78cdd" config-ref="VM_Config" queueName="vm:collect2"/>
+			</route>
+		</scatter-gather>
+	</flow>
+	<flow name="collect1Flow" doc:id="a9815728-3695-4ee0-86ce-522e945b047d" >
+		<vm:listener queueName="vm:collect" doc:name="collect1" doc:id="95fd7389-186a-46ec-ab39-61ea8f6f7bdf" config-ref="VM_Config"/>
+		<set-payload value="30" doc:name="30" doc:id="0e968729-baf6-4ea9-9505-6d6bcb22a18b" />
+		<ee:transform doc:name='{"val":30}' doc:id="81773bf7-7eb8-486a-bf0d-018e7409eea3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<vm:publish queueName="vm:collect1" doc:name="Publish" doc:id="2a610389-79b2-43df-8a88-339d63324a3e" config-ref="VM_Config"/>
+	</flow>
+	<flow name="collect2Flow" doc:id="e1611118-8332-492d-ad61-71c6566c9177" >
+		<vm:listener doc:name="collect2" doc:id="543d1059-804a-4039-8700-9e1476317f12" config-ref="VM_Config" queueName="vm:collect2"/>
+		<set-payload value="40" doc:name="40" doc:id="27ab8018-7fe3-4e5b-a164-3ab66adbbd25" />
+		<ee:transform doc:name='{"val":40}' doc:id="f1a489ec-a37f-4a82-803e-7facf1e69541">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<vm:publish queueName="vm:collect2" doc:name="Publish" doc:id="51b33c60-4c6b-4239-806a-8fd2df37c1ee" config-ref="VM_Config"/>
+	</flow>
+</mule>

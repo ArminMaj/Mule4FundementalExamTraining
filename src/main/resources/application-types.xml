@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="payload" format="json">
+      <types:shape format="weave" example="examples/valArray.Json"><![CDATA[%dw 2.0
+
+type payload = Array<{| val: Number {"typeId": "int"} |}> {"example": "[{\"val\":1},{\"val\":2},{\"val\":3}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="JavaMap" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: object
+properties:
+    val:
+        type: integer
+]]></types:shape>
+    </types:type>
+    <types:type name="numJson" format="json">
+      <types:shape format="weave" example="api/examples/valExample.json"><![CDATA[%dw 2.0
+
+type numJson = {| val: Number {"typeId": "int"} |} {"example": "{\"val\":1}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#0b860fa2-6ee6-450f-8930-67fb280ab19e">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="numJson"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="payload[]"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#c306b9f1-7cfc-485f-97e2-3590d31056b7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="payload"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="payload"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#200be297-f661-42a9-9aa9-405bef88333d">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="payload"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#325296fa-3aba-4b6e-a6f1-543e02fe3eee">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="JavaMap"/>
+          <types:attributes type="numJson"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="payload"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f92d5b2e-07ad-4bf9-90e1-e4b9ca396421">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="numJson"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

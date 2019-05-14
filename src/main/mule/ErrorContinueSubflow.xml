@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="OnErrorContinue" doc:id="4db8a6a5-e81c-462c-8360-d47990b5dc73" >
+		<set-payload value="10" doc:name="10" doc:id="33a5635a-1680-4f17-b6e4-a45d1c90f643" mimeType="text/plain" encoding="UTF-8" />
+		<ee:transform doc:name="To Json" doc:id="f588c4c1-f077-4ee6-a503-62934fd044c9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": ((payload as Number default 0)  + 2)  
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="errorContinueSubFlow" doc:id="d9b62e24-2beb-4df6-82c7-e3bc149a7f4a" name="errorContinueSubFlow" target="payload" targetValue="#[payload]" />
+		<logger level="INFO" doc:name="Logger" doc:id="b93fde1c-eedd-42a3-a9d6-66d58ba2fe28" message='#[{"what_is_the_Payload": payload}]' />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="de0c6747-b349-4cab-adc7-332bc5a6d3f6" type="ANY" >
+				<set-payload value="100" doc:name="100" doc:id="9fd1f49b-3a21-44b9-abd8-f4607a024c63" mimeType="text/plain" encoding="UTF-8" />
+				<ee:transform doc:name="payload+10" doc:id="2746dac0-a98a-46c0-8adc-e66d6fe98fd8" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+{
+	"val": (payload.val as Number) + 10
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	
+		<sub-flow name="errorContinueSubFlow" doc:id="efd5bfc8-ed05-42d9-840f-766eb9c482ad" >
+		<ee:transform doc:name="payload+10" doc:id="325296fa-3aba-4b6e-a6f1-543e02fe3eee">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+
+{
+	"val": (payload.val as Number) + 10
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:is-null doc:name="Is null" doc:id="35e28abf-83ff-403c-a91a-579b211223e6" value="#[payload]" message="is not null" />
+	</sub-flow>
+
+</mule>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get:main_uri\subFlowVarPayloadTest" doc:id="ea91f976-8dab-47af-a980-8daf1574ac82" >
+		<set-variable value="2" doc:name="MainVar=2" doc:id="04bf94e4-887d-4c43-aae2-0a269ceca9b2" variableName="MainVar" />
+		<set-payload value='[{"val":1},{"val":2},{"val":3}]' doc:name='[{"val":1},{"val":2},{"val":3}]' doc:id="6ae6edd7-1691-44b9-9a78-f41367f82672" mimeType="application/json" encoding="UTF-8" />
+		<flow-ref doc:name="subFlow transformPayload" doc:id="e2eaeb93-cba9-4f93-b5dc-0d69bd209948" name="transformPayload"/>
+		<logger level="INFO" doc:name="Logger" doc:id="afed24b3-5796-45c3-9152-3ec678c5dfa0" message="#[{
+	main_uri_suburi: {
+	 	subflowVar: vars.subflowVar,
+	 	payload: payload
+	 } 
+ }]" />
+	</flow>
+	<sub-flow name="transformPayload" doc:id="c07d8d6b-8596-4737-ae3b-e67dd2e78d31" >
+		<set-variable value="4" doc:name="subVar=4" doc:id="90e9df9b-a155-44cd-bedf-85d350a7b351" variableName="subVar" mimeType="application/dw" encoding="UTF-8" />
+		<ee:transform doc:name="payload[] -&gt; +1" doc:id="200be297-f661-42a9-9aa9-405bef88333d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var subVar = vars.subVar
+var mainVar = if (vars['MainVar']==null) 0 else vars.MainVar
+---
+
+payload map {
+	"values": $.val + 1,
+	"mainVar": mainVar,
+	"subVar": subVar
+} ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="eb96844e-ca3e-4724-9143-8783731f1392" message="#[payload as Number]" />
+	</sub-flow>
+</mule>
