@@ -5,7 +5,7 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="FlowRefTestFlow" doc:id="c79e8532-5f53-4339-a315-eef5cfcbe0dd" >
+	<flow name="OnErrorPropagateFlowRefMain" doc:id="c79e8532-5f53-4339-a315-eef5cfcbe0dd" >
 		<set-payload value="10" doc:name="10" doc:id="7e07d820-731f-44b2-bde4-3c5e36ada2ba" mimeType="text/plain" encoding="10"/>
 		<ee:transform doc:name='{"val": 10}' doc:id="da8c5042-a43b-4bd6-bb4f-1eefce5f4e24" >
 			<ee:message >

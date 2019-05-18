@@ -6,7 +6,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="ContinueOnError" doc:id="ae0264e4-2563-412f-9b02-1c006ae51183" >
+	<flow name="OnErrorContinueFlowRefMain" doc:id="ae0264e4-2563-412f-9b02-1c006ae51183" >
 		<set-payload value="10" doc:name="10" doc:id="338462a7-5bb3-4b51-b68a-7906578c774e" mimeType="text/plain" encoding="UTF-8" />
 		<ee:transform doc:name="payload+2" doc:id="5a7e1dac-19a4-46f6-83d6-f38e7556a360" >
 			<ee:message >
