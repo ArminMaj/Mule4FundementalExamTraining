@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="scatterGatherTest2Flow" doc:id="61a317e7-3832-42ee-893e-d3d1fc78e5ae" >
+		<set-payload value="&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;dataset&gt;&lt;record id=&quot;1&quot;&gt;&lt;first_name&gt;Marmaduke&lt;/first_name&gt;&lt;last_name&gt;Yerrill&lt;/last_name&gt;&lt;gender&gt;Male&lt;/gender&gt;&lt;ip_address&gt;33.12.142.233&lt;/ip_address&gt;&lt;email&gt;&lt;main&gt;myerrill0@cpanel.net&lt;/main&gt;&lt;other&gt;myerrill0@nbcnews.com&lt;/other&gt;&lt;/email&gt;&lt;/record&gt;&lt;record id=&quot;2&quot;&gt;&lt;first_name&gt;Noelani&lt;/first_name&gt;&lt;last_name&gt;Tchaikovsky&lt;/last_name&gt;&lt;gender&gt;Female&lt;/gender&gt;&lt;ip_address&gt;248.73.9.210&lt;/ip_address&gt;&lt;email&gt;&lt;main&gt;ntchaikovsky1@flickr.com&lt;/main&gt;&lt;other&gt;ntchaikovsky1@icio.us&lt;/other&gt;&lt;/email&gt;&lt;/record&gt;&lt;record id=&quot;3&quot;&gt;&lt;first_name&gt;Leodora&lt;/first_name&gt;&lt;last_name&gt;Haburne&lt;/last_name&gt;&lt;gender&gt;Female&lt;/gender&gt;&lt;ip_address&gt;6.159.66.93&lt;/ip_address&gt;&lt;email&gt;&lt;main&gt;lhaburne2@google.co.jp&lt;/main&gt;&lt;other&gt;lhaburne2@skype.com&lt;/other&gt;&lt;/email&gt;&lt;/record&gt;&lt;/dataset&gt;" doc:name="xmlPayload" doc:id="952d17ae-4d18-4be8-8bee-914682258cad" mimeType="application/xml" encoding="UTF-8"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="1150732c-08a4-41ea-86af-d8c5ebf948b4" >
+			<route >
+				<ee:transform doc:name="Transform Message" doc:id="6b8ee960-6379-412e-9a0e-e92679a95ace" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.dataset.*record map ( record , indexOfRecord ) -> {
+	record: {
+		id: record.@id default 0,
+		first_name: record.first_name default "",
+		gender: record.gender default "",
+		ip_address: record.ip_address default "",
+		last_name: record.last_name default "",
+		email: {
+			main: record.email.main default "",
+			other: record.email.other default ""
+		} write "application/json"
+	} write "application/json"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</route>
+			<route >
+				<flow-ref doc:name="Flow2" doc:id="a719040d-5ec0-4e28-877f-cae3f6a359d8" name="scatterGatherTest2Flow2" />
+			</route>
+			<route >
+				<flow-ref doc:name="Flow1" doc:id="53545042-d42a-4786-9eee-79dc6c209de0" name="scatterGatherTest2Flow1" />
+			</route>
+		</scatter-gather>
+	</flow>
+	<flow name="scatterGatherTest2Flow1" doc:id="6274b616-9e48-4f19-a05a-9b0db42176b6" >
+		<set-payload value='#[[{"val":1},{"val":2},{"val":3}]]' doc:name='[{"val":1},{"val":2},{"val":3}]' doc:id="20218601-e041-4c25-a513-55d3524e87c6" mimeType="application/json" encoding="UTF-8"/>
+		<ee:transform doc:name="Transform Message" doc:id="23a8421f-8239-43fb-9c1c-540445b9c318" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="scatterGatherTest2Flow2" doc:id="ca12f084-d819-44d5-96d7-b5d55d0128bd" >
+		<set-payload value='#[{"val":50}]' doc:name='{"val":50}' doc:id="de3d5f43-2181-4e77-a5c8-591a8fa30bc3" mimeType="application/json"/>
+		<ee:transform doc:name="Transform Message" doc:id="d1b16469-709a-41e2-ac94-776b4537dd68" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

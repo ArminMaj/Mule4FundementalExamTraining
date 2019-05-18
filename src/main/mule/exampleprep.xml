@@ -134,9 +134,9 @@ output application/json
         <flow-ref doc:name="subFlowVarPayloadTest.xml" doc:id="6860a3ab-3cbe-4cfa-88f0-4c2935813eb1" name="get:main_uri\subFlowVarPayloadTest" />
     </flow>
     <flow name="get:\main_uri\scattergather\test1:exampleprep-config2">
-        <flow-ref doc:name="Flow Reference" doc:id="173e734b-ec7c-4da1-a441-ff2db589a1e0" name="scatterGatherTest1" target="payload" targetValue="#[payload]" />
+        <flow-ref doc:name="Flow Reference" doc:id="173e734b-ec7c-4da1-a441-ff2db589a1e0" name="scatterGatherTest1"/>
     </flow>
 	<flow name="get:\main_uri\error\ContinueSubFlowRef:exampleprep-config2">
-        <flow-ref doc:name="Flow Reference" doc:id="617d7ff5-2f29-41e2-842a-93eac9244b56" name="OnErrorContinueSubFlowMain" target="payload" targetValue="#[payload]"/>
+        <flow-ref doc:name="Flow Reference" doc:id="617d7ff5-2f29-41e2-842a-93eac9244b56" name="OnErrorContinueSubFlowMain"/>
     </flow>
 </mule>

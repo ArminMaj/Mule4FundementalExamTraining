@@ -6,61 +6,63 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="OnErrorPropagateFlowRefMain" doc:id="c79e8532-5f53-4339-a315-eef5cfcbe0dd" >
-		<set-payload value="10" doc:name="10" doc:id="7e07d820-731f-44b2-bde4-3c5e36ada2ba" mimeType="text/plain" encoding="10"/>
+		<set-payload value="10" doc:name="10" doc:id="7e07d820-731f-44b2-bde4-3c5e36ada2ba" mimeType="text/plain" encoding="UTF-8"/>
 		<ee:transform doc:name='{"val": 10}' doc:id="da8c5042-a43b-4bd6-bb4f-1eefce5f4e24" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-{
-	"val": (payload as Number default 0) 
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="fb091328-25a0-42e0-ae07-4485e5b5a556" name="payloadTo30" targetValue="#[payload]"/>
-		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="995d0eb2-3a0a-450a-b932-dc2acbdeeebb" >
-				<set-payload value="55" doc:name="55" doc:id="dee0a8b8-882f-47c5-83d8-65b8e1668436" />
-				<ee:transform doc:name='{"val": 55}' doc:id="3552e8f6-3f3e-44fe-9c1c-d0f93feeae9b" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"val": (payload as Number default -50)
+	"val": (payload as Number default -10) 
 }]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-			</on-error-propagate>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="MainLogger1" doc:id="966d49cf-a460-4b03-b40c-46deb38df046" message='#[{"MainLogger1": payload}]'/>
+		<flow-ref doc:name="Flow Reference" doc:id="fb091328-25a0-42e0-ae07-4485e5b5a556" name="ErrorPropagateFlow" targetValue="payload"/>
+		<set-payload value="500" doc:name="500" doc:id="3cdea47a-e5ee-4111-a2f2-97bf503cbdc9" mimeType="text/plain" encoding="UTF-8" />
+		<ee:transform doc:name='{"val": 500}' doc:id="ecf6c293-024a-4479-a1d4-2e1dfcd2d90d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default -500) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="MainLogger2" doc:id="28b686b9-67e6-4873-82e8-428e51259ee1" message='#[{"MainLogger2": payload}]'/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="63dd8c06-98b9-4eea-8059-90f23cc8bc1a" type="ANY">
+				<logger level="INFO" doc:name="MainErrorLogger" doc:id="be14873f-91e5-4d4d-8972-cd40d1bf7acb" message='#[{"MainErrorLogger": payload}]' />
+			</on-error-continue>
 		</error-handler>
 	</flow>
-	<flow name="payloadTo30" doc:id="a8dcce62-6915-4c6c-953b-23c88a8f2852" >
-		<set-payload value="100" doc:name="100" doc:id="760e6920-817c-4145-a33e-d0d7c23e364b" />
-		<ee:transform doc:name='{"val": 100}' doc:id="73c3d2bf-cd0d-40ea-abe7-5e18d4286c5d">
+	<flow name="ErrorPropagateFlow" doc:id="a8dcce62-6915-4c6c-953b-23c88a8f2852" >
+		<ee:transform doc:name='{"val": 10} + 150' doc:id="73c3d2bf-cd0d-40ea-abe7-5e18d4286c5d">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"val": (payload as Number default -50
-	)
+	"val": (payload.val default -100) +150
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<validation:is-null doc:name="Is null" doc:id="4346badd-58c1-404c-9f8b-a56fc4998f44" value="#[payload]"/>
 		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dcde62a2-f9b1-43d9-a663-8762c11462c8" >
-				<set-payload value="20" doc:name="20" doc:id="3a7021d5-2d0e-4391-ab7f-86f61b83c599" />
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="SubPropagate" doc:id="dcde62a2-f9b1-43d9-a663-8762c11462c8" type="ANY">
+				<set-payload value="20" doc:name="20" doc:id="3a7021d5-2d0e-4391-ab7f-86f61b83c599" encoding="UTF-8" mimeType="text/plain"/>
 				<ee:transform doc:name='{"val": 20}' doc:id="e43208cd-1b2b-4150-a2c8-ed7d068e0fa1">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"val": (payload.val as Number default -50)
+	"val": (payload as Number default -20)
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+				<logger level="INFO" doc:name="SubErrorLogger" doc:id="21d2c871-5004-47a4-a721-c2880d9e479d" message='#[{"SubErrorLogger": payload}]'/>
 			</on-error-propagate>
 		</error-handler>
 	</flow>

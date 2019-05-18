@@ -7,34 +7,51 @@
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="OnErrorContinueSubFlowMain" doc:id="4db8a6a5-e81c-462c-8360-d47990b5dc73" >
-		<set-payload value="10" doc:name="10" doc:id="33a5635a-1680-4f17-b6e4-a45d1c90f643" mimeType="text/plain" encoding="UTF-8" />
-		<ee:transform doc:name="To Json" doc:id="f588c4c1-f077-4ee6-a503-62934fd044c9" >
+		<set-payload value='10' doc:name='10' doc:id="33a5635a-1680-4f17-b6e4-a45d1c90f643" mimeType="text/plain" encoding="UTF-8" />
+		<ee:transform doc:name='{"val": 10}' doc:id="af0b5f15-bf23-4cfb-a225-2b9679ad0aa4" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"val": ((payload as Number default 0)  + 2)  
-}
-]]></ee:set-payload>
+	"val": (payload as Number default 0)
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<flow-ref doc:name="errorContinueSubFlow" doc:id="d9b62e24-2beb-4df6-82c7-e3bc149a7f4a" name="errorContinueSubFlow" target="payload" targetValue="#[payload]" />
-		<logger level="INFO" doc:name="Logger" doc:id="b93fde1c-eedd-42a3-a9d6-66d58ba2fe28" message='#[{"what_is_the_Payload": payload}]' />
-		<error-handler >
-			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="de0c6747-b349-4cab-adc7-332bc5a6d3f6" type="ANY" >
-				<set-payload value="100" doc:name="100" doc:id="9fd1f49b-3a21-44b9-abd8-f4607a024c63" mimeType="text/plain" encoding="UTF-8" />
-				<ee:transform doc:name="payload+10" doc:id="2746dac0-a98a-46c0-8adc-e66d6fe98fd8" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+		<try doc:name="Try" doc:id="69f93a59-84d7-4fc8-b36b-b57a301ac995" transactionalAction="ALWAYS_BEGIN">
+			<flow-ref doc:name="errorContinueSubFlow" doc:id="d9b62e24-2beb-4df6-82c7-e3bc149a7f4a" name="errorContinueSubFlow" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="OnErrorContinue" doc:id="637c1f1e-f2dd-4e07-9acc-d89fd846b30f" type="ANY" >
+					<set-payload value="200" doc:name="200" doc:id="4fd33b3f-a531-4627-a54c-a612986585ed" mimeType="text/plain" encoding="UTF-8" />
+					<ee:transform doc:name='{"val": 200}' doc:id="a34dd0e0-33e6-43c9-97da-1264342ac74f" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-
 {
-	"val": (payload.val as Number) + 10
+	"val": (payload as Number default 0)
 }]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="TryErrorLogger" doc:id="8a75ee97-fd98-46e3-9e54-22487ecf2b17" message='#[{"TryErrorLogger": payload}]' />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="MainLogger" doc:id="b93fde1c-eedd-42a3-a9d6-66d58ba2fe28" message='#[{"MainLogger": payload}]' />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="OnErrorContinue" doc:id="29d0015e-274b-4aaf-b7db-bd311b2b04d3" type="ANY">
+				<set-payload value='100' doc:name='100' doc:id="937ec057-9658-41a5-88b6-585674cf4982" mimeType="text/plain" encoding="UTF-8" />
+				<ee:transform doc:name='{"val": 100}' doc:id="eae143cf-32ef-421f-b368-05f7c0e7628a">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<logger level="INFO" doc:name="ErrorLogger" doc:id="faf24d73-28f2-47ef-92b8-5041a9e3647e" message='#[{"ErrorLogger": payload}]' />
 			</on-error-continue>
 		</error-handler>
 	</flow>
@@ -47,10 +64,11 @@ output application/json
 ---
 
 {
-	"val": (payload.val as Number) + 10
+	"val": (payload.val as Number default 0) + 10
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="subFlowLogger" doc:id="ff9cdc90-3ae0-40eb-bf9d-3b8450df3b9f" message='#[{"subFlowLogger": payload}]'/>
 		<validation:is-null doc:name="Is null" doc:id="35e28abf-83ff-403c-a91a-579b211223e6" value="#[payload]" message="is not null" />
 	</sub-flow>
 

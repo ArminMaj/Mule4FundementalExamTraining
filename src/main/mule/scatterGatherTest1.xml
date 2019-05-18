@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="b195ae88-6070-42af-abed-8f9f3efb5b95">
+		<http:request-connection port="8081"/>
+	</http:request-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="1f22dfdd-3d15-471d-a716-97182ec51b14" >
+		<vm:queues >
+			<vm:queue queueName="vm:collect1" maxOutstandingMessages="100" />
+			<vm:queue queueName="vm:collect2" maxOutstandingMessages="100" />
+			<vm:queue queueName="vm:lisner1" maxOutstandingMessages="100" />
+			<vm:queue queueName="vm:Lisner2" maxOutstandingMessages="100" />
+		</vm:queues>
+	</vm:config>
+	<flow name="scatterGatherTest1" doc:id="3ba318b5-2ef6-4526-ac09-f0af12c76112" >
+		<scatter-gather doc:name="Scatter-Gather" doc:id="7b6b9cc7-e080-4586-8c48-c8e831e350e7" >
+			<route >
+				<set-payload value="10" doc:name="10" doc:id="e7ab370e-b3cc-4ba0-b80f-4db34559dd97" mimeType="text/plain" encoding="UTF-8" />
+				<ee:transform doc:name='{"val":10}' doc:id="bad01d96-ad5c-480a-b572-ad7a15d56d30">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<ee:transform doc:name="To JSON" doc:id="fd93300a-4713-41f6-8b58-1d94f0f7d5d0" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": payload.val
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</route>
+			<route >
+				<flow-ref doc:name="collect2Flow" doc:id="34515f77-3610-47b2-b00e-7fc6a951d992" name="collect2Flow"/>
+				<ee:transform doc:name="To JSON" doc:id="8c2e613a-051f-43d9-9798-ccc872392fe4">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": payload.val
+}
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</route>
+			<route >
+				<flow-ref doc:name="collect1Flow" doc:id="149365b2-7804-4d52-85d8-87db38e23934" name="collect1Flow" />
+				<ee:transform doc:name="To JSON" doc:id="d09b3484-7d79-4cbf-890a-140087b9cd41" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+{
+	"val": payload.val
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="0c6dfe5f-e31d-4a16-88c7-05d760d6502f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload pluck ((value) -> 
+	"val" : value.payload.val
+)
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="MainLogger" doc:id="871b6676-6b6b-432a-8bb4-8f1c228dbf76" message='#[{"MainLogger": payload}]'/>
+	</flow>
+	<flow name="collect1Flow" doc:id="a9815728-3695-4ee0-86ce-522e945b047d" initialState="started">
+		<set-payload value="30" doc:name="30" doc:id="0e968729-baf6-4ea9-9505-6d6bcb22a18b" mimeType="text/plain" encoding="UTF-8"/>
+		<ee:transform doc:name='{"val":30}' doc:id="81773bf7-7eb8-486a-bf0d-018e7409eea3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="collect2Flow" doc:id="e1611118-8332-492d-ad61-71c6566c9177" initialState="started">
+		<set-payload value="40" doc:name="40" doc:id="27ab8018-7fe3-4e5b-a164-3ab66adbbd25" mimeType="text/plain" encoding="UTF-8"/>
+		<ee:transform doc:name='{"val":40}' doc:id="f1a489ec-a37f-4a82-803e-7facf1e69541">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0) 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

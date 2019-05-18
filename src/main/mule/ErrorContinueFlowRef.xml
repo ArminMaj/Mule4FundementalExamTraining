@@ -1,35 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="OnErrorContinueFlowRefMain" doc:id="ae0264e4-2563-412f-9b02-1c006ae51183" >
-		<set-payload value="10" doc:name="10" doc:id="338462a7-5bb3-4b51-b68a-7906578c774e" mimeType="text/plain" encoding="UTF-8" />
-		<ee:transform doc:name="payload+2" doc:id="5a7e1dac-19a4-46f6-83d6-f38e7556a360" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+	<flow name="OnErrorContinueFlowRefMain" doc:id="0525da87-4735-4656-971e-2ad1e9bb4783" initialState="started">
+		<set-payload value="10" doc:name="10" doc:id="8ff5b850-899e-425d-83f9-66b6231a7f46" mimeType="text/plain" encoding="UTF-8" />
+		<ee:transform doc:name='{"val": 10}' doc:id="f5908d5d-976a-4a42-9975-5358597b55a0">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"val": ((payload as Number default 0)  + 2)  
+	"val": (payload as Number default 0)
 }
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<flow-ref doc:name="errorContinueSubFlow" doc:id="f8f345e1-b320-49f4-9291-b8748d74e0ca" name="errorContinueFlow" target="payload" targetValue="#[payload]" />
-		<logger level="INFO" doc:name="Logger" doc:id="09af7fdc-e49c-4141-9fd6-f0182e619e01" message='#[{"what_is_the_Payload": payload}]' />
+		<flow-ref doc:name="errorContinueSubFlow" doc:id="2778e0fc-e918-4afb-b010-5541fda944d5" name="errorContinueFlow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1812c830-fa17-4e76-9712-4611253e5b82" message='#[{"what_is_the_Payload": payload}]' />
 		<error-handler >
-			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bc82c42e-7c66-497b-a534-c0c1828615ef" type="ANY" >
-				<set-payload value="100" doc:name="100" doc:id="d82058c8-e373-4d1f-94e8-c838c9dea93c" mimeType="text/plain" encoding="UTF-8" />
-			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5a29cec1-564d-4d58-ab16-87d7f0c59dad" type="ANY">
+				<set-payload value="100" doc:name="100" doc:id="950d6626-5fbd-41b8-97a7-09f3d3fcdbab" mimeType="text/plain" encoding="UTF-8" />
+				<ee:transform doc:name='{"val": 100}' doc:id="d1d29b0a-52aa-4658-84e9-77b3058ce9df" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"val": (payload as Number default 0)
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			
+</on-error-continue>
 		</error-handler>
 	</flow>
 	
-		<flow name="errorContinueFlow" doc:id="1c1d2d00-26aa-4a6f-a807-122dbda415bb" >
-		<ee:transform doc:name="payload=20" doc:id="f92d5b2e-07ad-4bf9-90e1-e4b9ca396421" >
+		<flow name="errorContinueFlow" doc:id="e053355c-e454-42fa-b571-d125f27e8538" >
+		<ee:transform doc:name="payload=20" doc:id="68ad650a-87a5-460c-89e9-40036eee4acc" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -39,11 +52,11 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<validation:is-null doc:name="Is null" doc:id="e5e04ba2-d20b-4bbd-8e9b-14f36af933ca" value="#[payload]" message="the valu was null"/>
+		<validation:is-null doc:name="Is null" doc:id="29090966-e76e-4afb-8615-27c9446a3273" value="#[payload]" message="the valu was null"/>
 		<error-handler >
-			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="88cfabc6-78fe-4c18-8f7f-a670b3dc0e68" type="ANY">
-				<set-payload value='50' doc:name='50' doc:id="e85b2377-4af8-4a40-bfb6-d3662f564b8a" mimeType="text/plain" encoding="UTF-8"/>
-				<ee:transform doc:name='{"val": 50}' doc:id="31f4ec18-4965-4d94-aca3-ed9c6f2c7016" >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="09eba4dc-8df1-4c72-af68-760fb910cc8b" type="ANY">
+				<set-payload value='50' doc:name='50' doc:id="d63eb74b-c69f-49dc-a3ee-1d68d83ef5de" mimeType="text/plain" encoding="UTF-8"/>
+				<ee:transform doc:name='{"val": 50}' doc:id="21b0492c-e8ce-4471-b6d9-6d404cf4842f" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json

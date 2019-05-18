@@ -1,88 +1,260 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
   <types:catalog>
-    <types:type name="payload" format="json">
-      <types:shape format="weave" example="examples/valArray.Json"><![CDATA[%dw 2.0
-
-type payload = Array<{| val: Number {"typeId": "int"} |}> {"example": "[{\"val\":1},{\"val\":2},{\"val\":3}]"}
-
-]]></types:shape>
-    </types:type>
-    <types:type name="JavaMap" format="java">
-      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
-type: object
-properties:
-    val:
-        type: integer
-]]></types:shape>
-    </types:type>
-    <types:type name="numJson" format="json">
+    <types:type name="valJSON" format="json">
       <types:shape format="weave" example="api/examples/valExample.json"><![CDATA[%dw 2.0
 
-type numJson = {| val: Number {"typeId": "int"} |} {"example": "{\"val\":1}"}
+type valJSON = {| val: Number {"typeId": "int"} |} {"example": "{\"val\":1}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="varTest1" format="json">
+      <types:shape format="weave" example="api/examples/varTest1.json"><![CDATA[%dw 2.0
+
+type varTest1 = {|
+  values: Number {"typeId": "int"}, 
+  mainVar: Number {"typeId": "int"}, 
+  subVar: Number {"typeId": "int"}
+|} {"example": "{\"values\":20,\"mainVar\":7,\"subVar\":5}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="MainVar" format="java">
+      <types:shape format="java" element="java.lang.Integer"/>
+    </types:type>
+    <types:type name="datasetXML" format="xml">
+      <types:example format="xml" element="dataset" location="api/examples/datasets.xml"/>
+    </types:type>
+    <types:type name="datasetJSON" format="json">
+      <types:shape format="weave" example="api/examples/dataset.json"><![CDATA[%dw 2.0
+
+type datasetJSON = {|
+  record: {|
+    id: Number {"typeId": "int"}, 
+    first_name: String, 
+    gender: String, 
+    ip_address: String, 
+    last_name: String, 
+    email: {|
+      main: String, 
+      other: String
+    |}
+  |}
+|} {"example": "{\"record\":{\"id\":1,\"first_name\":\"Morgan\",\"gender\":\"Female\",\"ip_address\":\"43.1.39.246\",\"last_name\":\"Giacomelli\",\"email\":{\"main\":\"mgiacomelli0@mlb.com\",\"other\":\"mgiacomelli0@surveymonkey.com\"}}}"}
 
 ]]></types:shape>
     </types:type>
   </types:catalog>
-  <types:enrichment select="#0b860fa2-6ee6-450f-8930-67fb280ab19e">
+  <types:enrichment select="#68ad650a-87a5-460c-89e9-40036eee4acc">
     <types:processor-declaration>
       <types:input-event>
         <types:message>
-          <types:payload type="numJson"/>
+          <types:payload type="valJSON"/>
+          <types:attributes type="valJSON"/>
         </types:message>
       </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f5908d5d-976a-4a42-9975-5358597b55a0">
+    <types:processor-declaration>
       <types:output-event>
         <types:message>
-          <types:payload type="payload[]"/>
+          <types:payload type="valJSON"/>
         </types:message>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#c306b9f1-7cfc-485f-97e2-3590d31056b7">
+  <types:enrichment select="#da8c5042-a43b-4bd6-bb4f-1eefce5f4e24">
     <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="payload"/>
-        </types:message>
-      </types:input-event>
       <types:output-event>
         <types:message>
-          <types:payload type="payload"/>
+          <types:payload type="valJSON"/>
         </types:message>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#200be297-f661-42a9-9aa9-405bef88333d">
+  <types:enrichment select="#21b0492c-e8ce-4471-b6d9-6d404cf4842f">
     <types:processor-declaration>
-      <types:input-event>
+      <types:output-event>
         <types:message>
-          <types:payload type="payload"/>
+          <types:payload type="valJSON"/>
         </types:message>
-      </types:input-event>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#af0b5f15-bf23-4cfb-a225-2b9679ad0aa4">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#eae143cf-32ef-421f-b368-05f7c0e7628a">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
   <types:enrichment select="#325296fa-3aba-4b6e-a6f1-543e02fe3eee">
     <types:processor-declaration>
       <types:input-event>
         <types:message>
-          <types:payload type="JavaMap"/>
-          <types:attributes type="numJson"/>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#73c3d2bf-cd0d-40ea-abe7-5e18d4286c5d">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="valJSON"/>
         </types:message>
       </types:input-event>
       <types:output-event>
         <types:message>
-          <types:payload type="payload"/>
+          <types:payload type="valJSON"/>
         </types:message>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#f92d5b2e-07ad-4bf9-90e1-e4b9ca396421">
+  <types:enrichment select="#e43208cd-1b2b-4150-a2c8-ed7d068e0fa1">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f1a489ec-a37f-4a82-803e-7facf1e69541">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#81773bf7-7eb8-486a-bf0d-018e7409eea3">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#bad01d96-ad5c-480a-b572-ad7a15d56d30">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#8c2e613a-051f-43d9-9798-ccc872392fe4">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#fd93300a-4713-41f6-8b58-1d94f0f7d5d0">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#d09b3484-7d79-4cbf-890a-140087b9cd41">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0c6dfe5f-e31d-4a16-88c7-05d760d6502f">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON[]"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#ecf6c293-024a-4479-a1d4-2e1dfcd2d90d">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#04488ff4-cd3d-4c3c-8d1d-6927135283c7">
     <types:processor-declaration>
       <types:input-event>
         <types:message>
-          <types:payload type="numJson"/>
+          <types:payload type="valJSON[]"/>
         </types:message>
+        <types:variables>
+          <types:variable name="MainVar" type="MainVar"/>
+        </types:variables>
       </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="varTest1"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#952d17ae-4d18-4be8-8bee-914682258cad">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="datasetXML"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#6b8ee960-6379-412e-9a0e-e92679a95ace">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="datasetJSON[]"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#de3d5f43-2181-4e77-a5c8-591a8fa30bc3">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#20218601-e041-4c25-a513-55d3524e87c6">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="valJSON[]"/>
+        </types:message>
+      </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
 </types:mule>

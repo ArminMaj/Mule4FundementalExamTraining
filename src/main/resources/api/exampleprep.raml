@@ -5,6 +5,7 @@ title: examplePrep
 types:
   val: !include types/val.raml
   record: !include types/DataType.raml
+  varTest1: !include types/varTest1.raml
 
 /main_uri:
   /subFlowVarPayloadTest:
@@ -13,8 +14,8 @@ types:
         200:
           body:
             application/json:
-              type: val[]
-              example: !include examples/valArrayExample.json
+              type: varTest1
+              example: !include examples/varTest1.json
   /error:
     /ContinueFlowRef:
       get:
@@ -34,6 +35,7 @@ types:
                 example: !include examples/valExample.json
 
     /OnProgagateFlowRef:
+      description: why is MainLogger not executed?
       get:
         responses:
           200:
